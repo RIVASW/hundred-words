@@ -1,7 +1,17 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+require 'csv'
+
+english_language, russian_language = Language.create!([{ name: 'English' }, { name: 'Русский' }])
+
+dir = File.dirname(File.expand_path(__FILE__))
+
+translations_list =  TranslationsList.create!(name: 'First List')
+CSV.foreach(File.join(dir, 'translations_list.csv')) do |row|
+  foreign_word = Word.create!(word_text: row[0], language: english_language)
+  translation_word = Word.create!(word_text: row[1], language: russian_language)
+  translation = Translation.create(
+    foreign_word: foreign_word,
+    translation_word: translation_word,
+    translations_list: translations_list,
+  )
+end
+
