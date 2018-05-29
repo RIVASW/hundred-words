@@ -2,19 +2,39 @@
 
 const TRANSLATIONS_LISTS_INDEX_PATH = '/api/translations_lists';
 const TRANSLATIONS_LIST_PATH_BASE = '/api/translations_lists/';
+const TRANSLATIONS_LIST_CREATE_PATH = '/api/translations_lists/import_csv';
 
 function translationsListIndex(cb) {
-  return apiRequest(TRANSLATIONS_LISTS_INDEX_PATH, cb);
+  return apiGetRequest(TRANSLATIONS_LISTS_INDEX_PATH, cb);
 }
 
 function translationsList(id, cb) {
   let translationsListPath = TRANSLATIONS_LIST_PATH_BASE + id;
-  return apiRequest(translationsListPath, cb);
+  return apiGetRequest(translationsListPath, cb);
 }
 
-function apiRequest(path, cb) {
+function createTranslationsList(json, cb){
+  return apiPostRequest(TRANSLATIONS_LIST_CREATE_PATH, json, cb);
+}
+
+function apiGetRequest(path, cb) {
   return fetch(path, {
-    accept: 'application/json',
+    headers: {
+      'Accept': 'application/json'
+    },
+  }).then(checkStatus)
+    .then(parseJSON)
+    .then(cb);
+}
+
+function apiPostRequest(path, json, cb){
+  return fetch(path, {
+    method: 'post',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(json)
   }).then(checkStatus)
     .then(parseJSON)
     .then(cb);
@@ -35,5 +55,5 @@ function parseJSON(response) {
   return response.json();
 }
 
-const Client = { translationsListIndex, translationsList };
+const Client = { translationsListIndex, translationsList, createTranslationsList };
 export default Client;

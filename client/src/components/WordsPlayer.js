@@ -1,42 +1,23 @@
 import React, { Component } from 'react';
-import Client from './Client';
-import Spritz form '../spritz/Spritz'
-import '../spritz/Spritz.css';
+import Spritzer from '../spritzer/Spritzer'
+import '../spritzer/Spritzer.css';
+
+const WORDS_PER_MINUTE = 200;
 
 class WordsPlayer extends Component {
-  const WORDS_PER_MINUTE = 200
-
-  componentDidMount() {
-    Client.translationsList(this.props.id, (translationsList) => {
-      let words;
-      if (this.props.foreigns) {
-        words = this.selectForeigns(translationsList);
-      } else {
-        words = this.selectTranslations(translationsList)
-      }
-      Spritz.spritzify(words.join(' '), '#spritz_here', WORDS_PER_MINUTE);
-    });
-  }
-
-  selectForeigns(translationsList) {
-    translationsList.map((translation) => { return translation.foreign_word; });
-  }
-
-  selectTranslations(translationsList) {
-    translationsList.map((translation) => { return translation.translation_word; });
-  }
-
   render() {
-    return (
-      <div id="container">
-        <div id="guide_top">
-          ――――――――――<span id="notch">ф</span>―――――――――――
-        </div>
-          <div id="spritz_here"\>
-        <div id="guide_bottom">
-          ――――――――――――――――――――――
-        </div>
+    const words = this.props.words;
+    if(words.length !== 0) {
+      let elem = document.getElementById('spritz_here');
+      let spritz = new Spritzer(elem);
+      spritz.render(words.join(' '), WORDS_PER_MINUTE);
+    }
+    return (<div className='row'>
+      <div className='column'>
+        <h1 id="spritz_here"/>
       </div>
-    );
+    </div>);
   }
 }
+
+export default WordsPlayer;
